@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>嚕咪毛！飲料訂購表</title>
+    <!-- 使用 LIFF v2 SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body { padding: 15px; background-color: #FFF8F0; }
+        .btn-warning { background-color: #FF9F1C; border-color: #FF9F1C; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">🍹 嚕咪毛飲料訂購</h2>
+        <div class="form-group">
+            <label>姓名</label>
+            <input type="text" id="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>訂購日期</label>
+            <input type="date" id="datetime" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>飲料數量</label>
+            <input type="number" id="amount" class="form-control" min="1" value="1" required>
+        </div>
+        <div class="form-group">
+            <label>品項</label>
+            <select id="sel_drink" class="form-control">
+                <option selected>茉莉綠茶</option>
+                <option>珍珠紅茶</option>
+                <option>紅茶拿鐵</option>
+                <option>四季春茶</option>
+                <option>冬瓜檸檬</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>加料</label>
+            <select id="sel_topping" class="form-control">
+                <option selected>無</option>
+                <option>白玉珍珠</option>
+                <option>椰果</option>
+                <option>仙草</option>
+                <option>小芋園</option>
+            </select>
+        </div>
+        <button class="btn btn-warning btn-block mt-4" id="sure">確認訂單</button>
+    </div>
+
+    <script>
+        // 自動設定今日日期
+        document.getElementById('datetime').valueAsDate = new Date();
+
+        // LIFF 初始化
+        liff.init({ liffId: 'YOUR_LIFF_ID' })
+            .then(() => {
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                }
+            });
+
+        // 送出訂單
+        document.getElementById('sure').addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const datetime = document.getElementById('datetime').value;
+            const amount = document.getElementById('amount').value;
+            const drink = document.getElementById('sel_drink').value;
+            const topping = document.getElementById('sel_topping').value;
+
+            if (!name || !datetime || !amount) {
+                alert('請填寫所有必填欄位！');
+                return;
+            }
+
+            const msg = `【新訂單】\n姓名: ${name}\n日期: ${datetime}\n品項: ${drink}\n加料: ${topping}\n數量: ${amount}`;
+            
+            liff.sendMessages([{
+                type: 'text',
+                text: msg
+            }]).then(() => {
+                alert('訂單已送出！');
+                liff.closeWindow();
+            });
+        });
+    </script>
+</body>
+</html>
