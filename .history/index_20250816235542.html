@@ -1,0 +1,49 @@
+document.getElementById('submit-btn').addEventListener('click', async () => {
+  try {
+    // 验证必填字段
+    if (!validateForm()) return;
+
+    // 显示加载状态
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = '提交中...';
+
+    // 准备表单数据
+    const formData = {
+      觀測位置: document.getElementById('location').value,
+      巡視類型: document.getElementById('inspection-type').value,
+      災害類型: document.getElementById('disaster-type').value,
+      緊急程度: document.getElementById('urgency').value,
+      備註: document.getElementById('note').value,
+      回報者: document.getElementById('reporter').value,
+      最新資訊: document.getElementById('summary').value
+    };
+
+    // 添加文件URL（如果有）
+    if (photoUrl) formData.photoUrl = photoUrl;
+    if (voiceUrl) formData.voiceUrl = voiceUrl;
+
+    // 发送到Google Apps Script
+    const response = await fetch('YOUR_APPS_SCRIPT_URL', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json' // 必须设置这个header
+      },
+      body: JSON.stringify(formData) // 确保转换为JSON字符串
+    });
+
+    const result = await response.json();
+    if (result.status === 'success') {
+      alert('提交成功！');
+      liff.closeWindow();
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    console.error('提交失败:', err);
+    alert('提交失败: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '提交災情回報';
+  }
+});
