@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>災情回報</title>
+  <script src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
+  <style>
+    /* 樣式保持不變 */
+  </style>
+</head>
+<body>
+  <h1>災情回報</h1>
+
+  <!-- 介面保持不變 -->
+
+  <script>
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzuIy9QIb44iWmnV1Ie5FpvZdG7MQxuWAKobYYR_YjzwLWnjx4lrDnIqbf0pLesNgFw-A/exec';
+
+    // LIFF 和照片管理代碼保持不變...
+
+    // ===== 提交 =====
+    async function submitForm(){
+      const summary=document.getElementById('summary').value.trim();
+      if(!summary){ alert('請輸入備註'); return; }
+
+      const progress = document.getElementById('uploadProgress');
+      const status = document.getElementById('uploadStatus');
+      progress.style.display = 'block';
+      progress.value = 0;
+      status.textContent = '準備資料中...';
+
+      // 禁用提交按鈕防止重複提交
+      document.getElementById('submitBtn').disabled = true;
+
+      try {
+        // 先壓縮所有照片
+        status.textContent = '壓縮照片中...';
+        const compressedPhotos = [];
+        
+        for(let i=0; i<photos.length; i++){
+          status.textContent = `壓縮照片 ${i+1}/${photos.length}...`;
+          const compressed = await compressImage(photos[i].file);
+          compressedPhotos.push(compressed);
+          progress.value = (i + 1) / (photos.length + 1) * 30; // 壓縮階段佔30%
+          await delay(100); // 讓UI有時間更新
+        }
+
+        // 準備 FormData
+        let formData = new FormData();
+        formData.append('summary', summary);
+        
+        // 添加壓縮後的照片
+        for(let i=0; i<compressedPhotos.length; i++){
+          formData.append('photo'+i, compressedPhotos[i], 'photo'+i+'.jpg');
+        }
+
+        // 添加音頻
+        if(audioBlob){
+          formData.append('audio', audioBlob, 'recording.webm');
+        }
+
+        progress.value = 40;
+        status.textContent = '開始上傳...';
+
+        // 使用 fetch 上傳，但模擬進度條
+        const startTime = Date.now();
+        
+        // 模擬進度更新
+        const progressInterval = setInterval(() => {
+          const elapsed = Date.now() - startTime;
+          // 根據經驗值模擬進度：通常上傳需要5-15秒
+          const estimatedTime = compressedPhotos.length > 3 ? 15000 : 8000;
+          let simulatedProgress = 40 + (elapsed / estimatedTime) * 50;
+          
+          if (simulatedProgress > 90) simulatedProgress = 90; // 最高模擬到90%
+          
+          progress.value = simulatedProgress;
+          status.textContent = `已上傳 ${Math.round(simulatedProgress)}%`;
+        }, 200);
+
+        // 實際執行上傳
+        const response = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        // 清除模擬進度
+        clearInterval(progressInterval);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.result === 'success') {
+          progress.value = 100;
+          status.textContent = '上傳完成';
+          
+          await delay(500); // 讓用戶看到完成狀態
+          
+          alert(result.message || '回報提交成功！');
+          
+          // 清空表單
+          document.getElementById('summary').value = '';
+          photos.length = 0;
+          renderThumbs();
+          if(audioBlob) {
+            audioBlob = null;
+            document.getElementById('audioPlayback').style.display = 'none';
+          }
+          
+        } else {
+          throw new Error(result.message || '伺服器返回錯誤');
+        }
+        
+      } catch(err) {
+        progress.style.display = 'none';
+        status.textContent = '';
+        alert('提交失敗: ' + (err.message || err));
+        console.error('提交錯誤:', err);
+      } finally {
+        // 重新啟用提交按鈕
+        document.getElementById('submitBtn').disabled = false;
+      }
+    }
+
+    // 輔助函數：延遲
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // 壓縮圖片函數（保持不變）
+    async function compressImage(file) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1280;
+          const MAX_HEIGHT = 1280;
+          
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height = Math.round((height * MAX_WIDTH) / width);
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width = Math.round((width * MAX_HEIGHT) / height);
+              height = MAX_HEIGHT;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob(
+            (blob) => {
+              resolve(new File([blob], 'photo.jpg', { type: 'image/jpeg' }));
+            },
+            'image/jpeg',
+            0.7
+          );
+        };
+        
+        img.onerror = reject;
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    // 暴露函式保持不變
+  </script>
+</body>
+</html>
