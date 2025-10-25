@@ -306,10 +306,6 @@ button.temp-active,
   filter: brightness(0.7);
   transition: filter 0.1s ease;
 }
-.nav-btn.temp-active,
-.delete-btn-modal.temp-active {
-  filter: brightness(0.7);
-}
 </style>
 </head>
 
@@ -434,7 +430,7 @@ function renderThumbs() {
   const addBtn = document.createElement("div");
   addBtn.className = "add-photo";
   addBtn.innerHTML = "+";
-  addBtn.onclick = (e) => delayed(() => openGallery());
+  addBtn.onclick = openGallery;
   thumbs.appendChild(addBtn);
 
   // 預覽按鈕（單獨一行置中）
@@ -445,7 +441,7 @@ function renderThumbs() {
     const previewBtn = document.createElement("button");
     previewBtn.className = "preview-all-btn";
     previewBtn.textContent = "預覽照片";
-previewBtn.onclick = (e) => delayed(() => showImage(0));
+    previewBtn.onclick = () => showImage(0);
     row.appendChild(previewBtn);
     thumbs.appendChild(row);
   }
@@ -484,21 +480,11 @@ function showImage(index = 0) {
 }
 
 function setupPreviewModal() {
-  document.getElementById("closeModalBtn").onclick = (e) =>
-    delayed(() => closePreviewModal());
-
-  document.getElementById("navLeft").onclick = (e) =>
-    delayed(() => changePreview(-1));
-
-  document.getElementById("navRight").onclick = (e) =>
-    delayed(() => changePreview(1));
-
-  document.getElementById("confirmBtn").onclick = (e) =>
-    delayed(() => handleConfirm());
-
-  document.getElementById("deleteCurrentBtn").onclick = (e) =>
-    delayed(() => deletePreviewPhoto());
-
+  document.getElementById("closeModalBtn").onclick = closePreviewModal;
+  document.getElementById("navLeft").onclick = () => changePreview(-1);
+  document.getElementById("navRight").onclick = () => changePreview(1);
+  document.getElementById("confirmBtn").onclick = handleConfirm;
+  document.getElementById("deleteCurrentBtn").onclick = deletePreviewPhoto;
   document.body.style.overflow = "hidden";
 }
 
