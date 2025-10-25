@@ -302,35 +302,20 @@ body.modal-open {
 /* === 按鈕即時回饋灰暗 === */
 button.temp-active,
 .add-photo.temp-active,
-#closeModalBtn.temp-active,
-.nav-btn.temp-active,
-.delete-btn-modal.temp-active {
+#closeModalBtn.temp-active {
   filter: brightness(0.7);
   transition: filter 0.1s ease;
 }
-
-/* 防止 iOS 長按與選取 */
-* {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
+.nav-btn.temp-active,
+.delete-btn-modal.temp-active {
+  filter: brightness(0.7);
 }
-
-/* 移除 focus 樣式 */
 button:focus,
 .nav-btn:focus,
 #closeModalBtn:focus,
 .add-photo:focus {
   outline: none;
   box-shadow: none;
-}
-
-/* 防止 active 狀態卡色：只禁用顏色變化 */
-button:active,
-.nav-btn:active,
-#closeModalBtn:active,
-.add-photo:active {
-  filter: none !important;
-  background-color: initial !important;
 }
 </style>
 </head>
