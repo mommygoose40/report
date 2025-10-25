@@ -65,41 +65,43 @@ body {
   margin-bottom: 20px;
 }
 
-/* === 統一互動按鈕樣式 === */
-.ui-btn {
-  display: inline-block;
+/* 移除預設觸控高亮 */
+button, .nav-btn, .add-photo, #closeModalBtn {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* === 通用按鈕 === */
+button {
   padding: 10px 18px;
   margin: 6px 4px;
   background: #0b5ed7;
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 15px;
-  text-align: center;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: none;
+  font-size: 15px;
+  transition: background 0.1s ease;
 }
-.ui-btn:active {
-  filter: brightness(0.7);
+button:hover {
+  background: #144b9c;
 }
-
-/* 紅色型 */
-.ui-btn.red {
-  background: #dc3545;
-}
-.ui-btn.red:active {
-  filter: brightness(0.7);
+button:active {
+  background: #26344d;
 }
 
-/* 灰色型 */
-.ui-btn.gray {
-  background: #60748f;
+/* 紅色刪除類 */
+.delete-btn-modal,
+.thumb .delete-btn {
+  background: #dc3545 !important;
+  color: #fff !important;
+  border: none;
+  cursor: pointer;
+  transition: background 0.1s ease;
 }
-.ui-btn.gray:active {
-  filter: brightness(0.7);
+.delete-btn-modal:hover,
+.thumb .delete-btn:hover {
+  background: #b52b38 !important;
 }
 
 /* === 縮圖 === */
@@ -126,8 +128,6 @@ body {
   object-fit: cover;
   display: block;
 }
-
-/* 縮圖小叉叉 */
 .thumb .delete-btn {
   position: absolute;
   top: 4px;
@@ -143,11 +143,10 @@ body {
   text-align: center;
   cursor: pointer;
   padding: 0;
-  -webkit-tap-highlight-color: transparent;
-  transition: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: background 0.1s ease;
+}
+.thumb .delete-btn:hover {
+  background: rgba(220, 53, 69, 1);
 }
 
 /* 加號按鈕 */
@@ -164,11 +163,13 @@ body {
   font-size: 36px;
   cursor: pointer;
   background: #f0f4ff;
-  transition: none;
+  transition: background 0.1s ease;
+}
+.add-photo:hover {
+  background: #d9e5ff;
 }
 .add-photo:active {
   background: #c0d2ff;
-  filter: brightness(0.7);
 }
 
 /* 預覽照片按鈕 */
@@ -176,11 +177,13 @@ body {
   background: #60748f !important;
   color: #fff !important;
   margin-top: 12px;
-  transition: none;
+  transition: background 0.1s ease;
+}
+.preview-all-btn:hover {
+  background: #4e607a !important;
 }
 .preview-all-btn:active {
   background: #384a60 !important;
-  filter: brightness(0.7);
 }
 
 /* === Modal === */
@@ -224,8 +227,6 @@ body {
   flex: 1;
   text-align: center;
 }
-
-/* 關閉叉叉 */
 #closeModalBtn {
   position: absolute;
   right: 10px;
@@ -236,14 +237,10 @@ body {
   border: none;
   color: #000;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: none;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
+  transition: color 0.1s ease;
+}
+#closeModalBtn:hover {
+  color: #444;
 }
 
 /* 預覽圖片 */
@@ -273,12 +270,13 @@ body {
   padding: 10px 16px;
   cursor: pointer;
   border-radius: 8px;
-  -webkit-tap-highlight-color: transparent;
-  transition: none;
+  transition: background 0.1s ease;
+}
+.nav-btn:hover {
+  background: rgba(0,0,0,0.6);
 }
 .nav-btn:active {
   background: rgba(0,0,0,0.35);
-  filter: brightness(0.7);
 }
 .nav-btn.disabled {
   opacity: 0.35;
@@ -292,67 +290,169 @@ body.modal-open {
   overflow: hidden;
 }
 
-/* 操作按鈕區域 */
-.action-buttons {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-.action-buttons button {
-  min-width: 100px;
-}
-
-/* === 統一互動灰暗回饋 === */
-
-/* 確保所有按鈕都有相同的互動效果 */
+/* 只針對互動元素禁用選取與高亮 */
 button,
-label.ui-btn,
+.nav-btn,
+.add-photo,
+#closeModalBtn {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 移除 focus 樣式 */
+button:focus,
+.nav-btn:focus,
+#closeModalBtn:focus,
+.add-photo:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* 手動控制按壓灰暗 */
+button,
 .add-photo,
 .nav-btn,
-#closeModalBtn,
-.thumb .delete-btn {
+#closeModalBtn {
+  transition: filter 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.temp-active {
+  filter: brightness(0.7) !important;
+}
+.file-btn {
+  display: inline-block;
+  padding: 10px 18px;
+  margin: 6px 4px;
+  background: #0b5ed7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: filter 0.1s ease;
+}
+
+.file-btn:active {
+  filter: brightness(0.7);
+}
+/* === 統一互動按鈕樣式 === */
+.ui-btn {
+  display: inline-block;
+  padding: 10px 18px;
+  margin: 6px 4px;
+  background: #0b5ed7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   user-select: none;
+  transition: none; /* ← 取消延遲，立即反應 */
+}
+.ui-btn:active {
+  filter: brightness(0.7);
+}
+
+/* 紅色型 */
+.ui-btn.red {
+  background: #dc3545;
+}
+.ui-btn.red:active {
+  filter: brightness(0.7);
+}
+
+/* 灰色型 */
+.ui-btn.gray {
+  background: #60748f;
+}
+.ui-btn.gray:active {
+  filter: brightness(0.7);
+}
+
+/* 左右箭頭保持原灰黑背景，不吃 ui-btn 顏色 */
+.nav-btn {
+  background: rgba(0,0,0,0.45) !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 8px;
+  font-size: 28px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.05s ease; /* 即時回饋 */
+}
+.nav-btn:hover {
+  background: rgba(0,0,0,0.6) !important;
+}
+.nav-btn:active {
+  background: rgba(0,0,0,0.35) !important;
+}
+/* === 統一叉叉與縮圖刪除回饋 === */
+
+/* 縮圖上的小叉叉 */
+.thumb .delete-btn {
+  background: rgba(220, 53, 69, 0.9);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  width: 24px;
+  height: 24px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: filter 0.05s ease;
+}
+.thumb .delete-btn:active {
+  filter: brightness(0.7);
+}
+.temp-active {
+  filter: brightness(0.7) !important;
+  transition: none !important;
+}
+/* === 統一互動灰暗回饋 === */
+
+/* 關閉叉叉 */
+#closeModalBtn {
+  background: none !important;
+  color: #000 !important;
+  font-size: 40px;
+  border: none;
+  cursor: pointer;
+  padding: 4px 10px;
+  -webkit-tap-highlight-color: transparent;
   transition: none !important;
 }
 
-/* 移除 hover 效果，只保留 active 效果 */
-button:hover,
-label.ui-btn:hover,
-.add-photo:hover,
-.nav-btn:hover,
-#closeModalBtn:hover,
-.thumb .delete-btn:hover {
-  filter: none !important;
+/* 縮圖小叉叉 */
+.thumb .delete-btn {
+  background: rgba(220, 53, 69, 0.9);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  width: 24px;
+  height: 24px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: none !important;
 }
 
 /* 即時灰暗效果（所有互動元素共用） */
 .temp-active {
   filter: brightness(0.7) !important;
   transition: none !important;
-}
-
-/* 其他表單元素 */
-input[type="text"] {
-  padding: 12px;
-  width: 95%;
-  border: 2px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: all 0.2s ease;
-  color: #000;
-}
-input[type="text"]:focus {
-  border-color: #0b5ed7;
-  box-shadow: 0 0 5px rgba(11,94,215,0.4);
-  outline: none;
-}
-.form-section label {
-  font-size: 21px;
-  margin-bottom: 6px;
-  display: inline-block;
 }
 </style>
 </head>
