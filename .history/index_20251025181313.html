@@ -396,8 +396,6 @@ fileGallery.addEventListener("change", () => {
 // === 縮圖顯示 ===
 function renderThumbs() {
   thumbs.innerHTML = "";
-
-  // 現有縮圖
   photos.forEach((p, i) => {
     const div = document.createElement("div");
     div.className = "thumb";
@@ -407,14 +405,6 @@ function renderThumbs() {
     thumbs.appendChild(div);
   });
 
-  // 加號按鈕（放在最後）
-  const addBtn = document.createElement("div");
-  addBtn.className = "add-photo";
-  addBtn.innerHTML = "+";
-  addBtn.onclick = openGallery;
-  thumbs.appendChild(addBtn);
-
-  // 預覽按鈕（置中一行）
   if (photos.length > 0) {
     const previewRow = document.createElement("div");
     previewRow.style.textAlign = "center";
