@@ -357,71 +357,7 @@ function openPreview(type, filesOrPhotos, startIndex = 0) {
   if (isConfirm) {
     document.getElementById("confirmAddBtn").onclick = () => addPhotosFromConfirm();
   } else {
-    document.getElementById("confirmKeepBtn").onclick = () => closePreview();
-  }
-
-  function navigate(dir) {
-    currentIndex += dir;
-    if (currentIndex < 0) currentIndex = blobCache.length - 1;
-    if (currentIndex >= blobCache.length) currentIndex = 0;
-    setPhoto();
-  }
-
-  function deleteCurrent() {
-    if (!confirm("確認刪除此照片？")) return;
-    if (isConfirm) {
-      list.splice(currentIndex, 1);
-      blobCache.splice(currentIndex, 1);
-      if (list.length === 0) return closePreview();
-      currentIndex = Math.min(currentIndex, list.length - 1);
-      setPhoto();
-    } else {
-      removePhoto(currentIndex);
-      blobCache.splice(currentIndex, 1);
-      if (photos.length === 0) return closePreview();
-      currentIndex = Math.min(currentIndex, photos.length - 1);
-      setPhoto();
-    }
-  }
-
-  function closePreview() {
-    clearBlobCache();
-    imgModal.style.display = "none";
-    imgModal.innerHTML = "";
-  }
-
-  if (isConfirm) window._pendingPhotos = list;
-}
-
-function clearBlobCache() {
-  blobCache.forEach((url) => {
-    if (url.startsWith("blob:")) URL.revokeObjectURL(url);
-  });
-  blobCache = [];
-}
-
-function confirmUpload(files) {
-  if (!files || files.length === 0) return;
-  openPreview("confirm", files, 0);
-}
-
-function showImage(index = 0) {
-  if (photos.length === 0) return;
-  openPreview("preview", photos, index);
-}
-
-function addPhotosFromConfirm() {
-  if (!window._pendingPhotos || window._pendingPhotos.length === 0) return;
-  window._pendingPhotos.forEach((f) => {
-    const url = URL.createObjectURL(f);
-    photos.push({ file: f, url });
-  });
-  renderThumbs();
-  imgModal.style.display = "none";
-  imgModal.innerHTML = "";
-  window._pendingPhotos = null;
-  clearBlobCache();
-}
+    document.getElementById("confirmKeepBtn").o
 
 /* === 錄音 === */
 let mediaRecorder=null,audioChunks=[],audioBlob=null;
