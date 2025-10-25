@@ -180,11 +180,11 @@ input[type="text"]:focus {
 
 #closeModalBtn {
   position: absolute;
-  top: 8px;
-  right: 15px;
+  right: 10px;
+  top: 0;
+  font-size: 40px;
   background: none;
   border: none;
-  font-size: 30px;
   color: #000;
   cursor: pointer;
 }
@@ -245,6 +245,13 @@ input[type="text"]:focus {
 /* 固定背景，預覽時不滾動 */
 body.modal-open {
   overflow: hidden;
+}
+/* 關閉按鈕位置與大小 */
+#closeModalBtn {
+  font-size: 38px !important;
+  position: absolute;
+  top: 4px;
+  right: 14px;
 }
 
 /* 標題與關閉叉叉在同一水平線 */
@@ -426,8 +433,6 @@ function confirmUpload(files) {
   previewIndex = 0;
   setupPreviewModal();
   showPreviewModal();
-  // 改名「開相簿」→「繼續添加」
-  document.querySelector('button[onclick="openGallery()"]').textContent = "繼續添加";
 }
 
 function showImage(index = 0) {
@@ -466,10 +471,7 @@ function closePreviewModal() {
 function updatePreviewImage() {
   const img = document.getElementById("previewImage");
   const title = document.getElementById("modalTitle");
-  const leftBtn = document.getElementById("navLeft");
-  const rightBtn = document.getElementById("navRight");
   if (previewFiles.length === 0) return;
-
   const total = previewFiles.length;
   const current = previewIndex + 1;
   title.textContent =
@@ -483,20 +485,16 @@ function updatePreviewImage() {
   if (previewMode === "confirm") {
     confirmBtn.style.display = "inline-block";
     confirmBtn.textContent = "確認完成";
+    document.getElementById("deleteCurrentBtn").textContent = "刪除這張";
   } else {
     confirmBtn.style.display = "none";
+    document.getElementById("deleteCurrentBtn").textContent = "刪除這張";
   }
-  document.getElementById("deleteCurrentBtn").textContent = "刪除這張";
-
-  // 左右箭頭反灰控制
-  leftBtn.style.opacity = previewIndex === 0 ? "0.4" : "1";
-  leftBtn.style.pointerEvents = previewIndex === 0 ? "none" : "auto";
-  rightBtn.style.opacity = previewIndex === total - 1 ? "0.4" : "1";
-  rightBtn.style.pointerEvents = previewIndex === total - 1 ? "none" : "auto";
 }
 
 function changePreview(dir) {
   const next = previewIndex + dir;
+  // 鎖死邊界，不循環
   if (next < 0 || next >= previewFiles.length) return;
   previewIndex = next;
   updatePreviewImage();
