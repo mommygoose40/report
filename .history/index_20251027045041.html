@@ -679,10 +679,10 @@ async function confirmUpload(files) {
 
   const overlay = document.createElement("div");
   overlay.id = "loadingSpinner";
-  overlay.innerHTML = `
+  overlay.innerHTML = 
     <div class="spinner-circle"></div>
     <div class="spinner-text" style="font-size:22px;">照片載入中...</div>
-  `;
+  ;
   Object.assign(overlay.style, {
     display: "flex",
     flexDirection: "column",
@@ -800,8 +800,8 @@ function updatePreviewImage() {
   const current = previewIndex + 1;
   title.textContent =
     previewMode === "confirm"
-      ? `請確認照片 (${current}/${total})`
-      : `預覽照片 (${current}/${total})`;
+      ? 請確認照片 (${current}/${total})
+      : 預覽照片 (${current}/${total});
 
   const newSrc = previewFiles[previewIndex].url;
 
@@ -830,12 +830,12 @@ function showPhotoError(container) {
   if (document.getElementById("errorMessage")) return;
   const errBox = document.createElement("div");
   errBox.id = "errorMessage";
-  errBox.innerHTML = `
+  errBox.innerHTML = 
     <div style="font-size:48px;line-height:1;color:#d32f2f;">⚠️</div>
     <div style="color:#d32f2f;font-size:22px;font-weight:600;margin-top:10px;">
       錯誤，請重新上傳這張照片
     </div>
-  `;
+  ;
   Object.assign(errBox.style, {
     position: "absolute",
     top: "50%",
@@ -973,12 +973,12 @@ function showMessage(text) {
 
 // === 動畫 ===
 const style = document.createElement("style");
-style.textContent = `
+style.textContent = 
 @keyframes fadeInOut {
   0% {opacity:0;transform:translate(-50%,-60%);}
   10%,90% {opacity:1;transform:translate(-50%,-50%);}
   100% {opacity:0;transform:translate(-50%,-40%);}
-}`;
+};
 document.head.appendChild(style);
 
 window.addEventListener("beforeunload", () => {
@@ -1005,24 +1005,6 @@ async function compressImage(file, maxWidth = 1280, maxHeight = 1280) {
     img.src = URL.createObjectURL(file);
   });
 }
-
-/*function openCamera() {
-  const btn = event.currentTarget;
-  btn.classList.add("temp-active");
-  requestAnimationFrame(() => {
-    fileCamera.click();
-    btn.classList.remove("temp-active");
-  });
-}
-
-function openGallery() {
-  const btn = event.currentTarget;
-  btn.classList.add("temp-active");
-  requestAnimationFrame(() => {
-    fileGallery.click();
-    btn.classList.remove("temp-active");
-  });
-}*/
 
 /* === 錄音 === */
 let mediaRecorder=null,audioChunks=[],audioBlob=null;
