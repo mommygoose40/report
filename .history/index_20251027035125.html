@@ -580,9 +580,6 @@ fileGallery.addEventListener("change", () => {
 });
 
 function renderThumbs() {
-  photos.forEach(p => {
-  if (p.url && p.url.startsWith("blob:")) URL.revokeObjectURL(p.url);
-});
   thumbs.innerHTML = "";
 
   photos.forEach((p, i) => {
@@ -641,10 +638,6 @@ function renderThumbs() {
     row.appendChild(previewBtn);
     thumbs.appendChild(row);
   }
-
-  requestAnimationFrame(() => {
-  thumbs.appendChild(addBtn);
-});
 }
 
 function removePhoto(index) {
@@ -702,12 +695,7 @@ async function confirmUpload(files) {
   await new Promise(r => setTimeout(r, 100));
 
   previewMode = "confirm";
-  previewFiles = await Promise.all(
-  files.map(async f => {
-    const small = await compressImage(f);
-    return { file: small, url: URL.createObjectURL(small) };
-  })
-);
+  previewFiles = files.map(f => ({ file: f, url: URL.createObjectURL(f) }));
   previewIndex = 0;
 
   overlay.remove();
@@ -987,27 +975,6 @@ document.head.appendChild(style);
 window.addEventListener("beforeunload", () => {
   photos.forEach(p => URL.revokeObjectURL(p.url));
 });
-
-async function compressImage(file, maxWidth = 1280, maxHeight = 1280) {
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      let { width, height } = img;
-      const ratio = Math.min(maxWidth / width, maxHeight / height, 1);
-      canvas.width = width * ratio;
-      canvas.height = height * ratio;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(
-        blob => resolve(new File([blob], file.name, { type: "image/jpeg" })),
-        "image/jpeg",
-        0.8
-      );
-    };
-    img.src = URL.createObjectURL(file);
-  });
-}
 
 /*function openCamera() {
   const btn = event.currentTarget;
