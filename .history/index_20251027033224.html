@@ -854,16 +854,7 @@ function handleConfirm() {
     });
     renderThumbs();
   }
-
-  // 先關閉 modal，再釋放 blob
   closePreviewModal();
-
-  // 釋放預覽用的暫存 URL，避免 Android 快取佔用過多
-  previewFiles.forEach(p => {
-    if (p.url && typeof p.url === "string" && p.url.startsWith("blob:")) {
-      URL.revokeObjectURL(p.url);
-    }
-  });
 }
 
 function deletePreviewPhoto() {
@@ -964,10 +955,6 @@ style.textContent = `
   100% {opacity:0;transform:translate(-50%,-40%);}
 }`;
 document.head.appendChild(style);
-
-window.addEventListener("beforeunload", () => {
-  photos.forEach(p => URL.revokeObjectURL(p.url));
-});
 
 /*function openCamera() {
   const btn = event.currentTarget;
