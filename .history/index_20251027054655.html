@@ -548,25 +548,34 @@ showMessage(`您還可以新增 <b>${remain}</b> 張照片`, openAction);
 function openCamera() {
   const remain = MAX_TOTAL - photos.length;
 
-  if (remain <= 0) {
+  // 只有使用者主動點時才顯示提示
+  if (photos.length >= MAX_TOTAL) {
     showMessage("已達上限 20 張，無法再新增照片");
     return;
   }
 
-  // 相機直接開，不顯示可新增幾張
-  fileCamera.click();
+  if (remain < MAX_TOTAL) {
+    showMessage(`您還可以新增 <b>${remain}</b> 張照片`, () => fileCamera.click());
+  } else {
+    // 第一次還沒上傳過照片，不用提示
+    fileCamera.click();
+  }
 }
 
 function openGallery() {
   const remain = MAX_TOTAL - photos.length;
 
-  if (remain <= 0) {
+  if (photos.length >= MAX_TOTAL) {
     showMessage("已達上限 20 張，無法再新增照片");
     return;
   }
 
-  // 相簿要顯示提示再開
-  showMessage(`您還可以新增 <b>${remain}</b> 張照片`, () => fileGallery.click());
+  if (remain < MAX_TOTAL) {
+    showMessage(`您還可以新增 <b>${remain}</b> 張照片`, () => fileCamera.click());
+  } else {
+    // 第一次還沒上傳過照片，不用提示
+    fileGallery.click();
+  }
 }
 
 fileCamera.addEventListener("change", () => {
