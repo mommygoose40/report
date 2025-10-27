@@ -701,17 +701,10 @@ async function confirmUpload(files) {
   img.removeAttribute("src");
   img.style.opacity = "0";
 
-  // 左右箭頭先鎖住，但確認與刪除保持可用
-[leftBtn, rightBtn].forEach(btn => {
-  btn.classList.add("disabled");
-  btn.style.pointerEvents = "none";
-});
-
-// 「刪除這張」與「確認完成」在載入中仍可點
-[deleteBtn, confirmBtn].forEach(btn => {
-  btn.classList.remove("disabled");
-  btn.style.pointerEvents = "";
-});
+  [leftBtn, rightBtn, deleteBtn, confirmBtn].forEach(btn => {
+    btn.classList.add("disabled");
+    btn.style.pointerEvents = "none";
+  });
 
   const overlay = document.createElement("div");
   overlay.id = "loadingSpinner";
@@ -744,12 +737,6 @@ async function confirmUpload(files) {
   previewIndex = 0;
 
   overlay.remove();
-
-  // 保證載入完後不閃爍：立即顯示確認完成按鈕
-confirmBtn.style.display = "inline-block";
-confirmBtn.textContent = "確認完成";
-deleteBtn.textContent = "刪除這張";
-
   setupPreviewModal();
   updatePreviewImage();
   updateNavButtons();
