@@ -754,17 +754,7 @@ function renderThumbs() {
   row.style.textAlign = "center";
   row.style.width = "100%";
 
-  // === 分隔線 ===
-  const hr = document.createElement("div");
-  Object.assign(hr.style, {
-    width: "80%",
-    height: "1px",
-    background: "#ccc",
-    margin: "16px auto 12px auto",
-    border: "none",
-  });
-
-  // === 顯示目前張數 ===
+  // === 先顯示目前張數 ===
   const countInfo = document.createElement("div");
   countInfo.id = "photoCountInfo";
   countInfo.style.marginBottom = "8px";
@@ -772,16 +762,14 @@ function renderThumbs() {
   countInfo.style.color = "#555";
 
   const remain = MAX_TOTAL - photos.length;
-  countInfo.innerHTML = `目前共 <b>${photos.length}</b> 張，還可新增 <b>${remain}</b> 張`;
+  countInfo.innerHTML = `目前共 <b>${photos.length}</b> 張，還可再新增 <b>${remain}</b> 張`;
 
-  // === 預覽按鈕 ===
+  // === 再顯示預覽按鈕 ===
   const previewBtn = document.createElement("button");
   previewBtn.className = "preview-all-btn ui-btn gray";
   previewBtn.textContent = "預覽照片";
   previewBtn.onclick = () => showImage(0);
 
-  // === 組合 ===
-  row.appendChild(hr);
   row.appendChild(countInfo);
   row.appendChild(previewBtn);
   thumbs.appendChild(row);
