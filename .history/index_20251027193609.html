@@ -735,10 +735,14 @@ function removePhoto(index) {
 
 async function confirmUpload(files) {
   if (!files || files.length === 0) return;
-  if (photos.length + files.length > MAX_TOTAL) {
-    showMessage("超過 20 張上限，請重新選擇");
-    return;
-  }
+  if (selected > MAX_PER_BATCH) {
+  showMessage(
+    `超過 <span style="color:red;font-weight:bold;">${MAX_PER_BATCH}</span> 張上限，請重新選擇`
+  );
+  fileGallery.value = "";
+  return;
+}
+
 
   const img = document.getElementById("previewImage");
   const title = document.getElementById("modalTitle");
@@ -747,7 +751,6 @@ async function confirmUpload(files) {
   const rightBtn = document.getElementById("navRight");
   const deleteBtn = document.getElementById("deleteCurrentBtn");
   const confirmBtn = document.getElementById("confirmBtn");
-  const actionBtns = document.querySelector(".action-buttons"); // 這是按鈕區容器
 
   title.textContent = "請確認照片";
   imgModal.style.display = "flex";
@@ -755,39 +758,12 @@ async function confirmUpload(files) {
   img.removeAttribute("src");
   img.style.opacity = "0";
 
-  // === 所有按鈕先禁用 ===
   [leftBtn, rightBtn, deleteBtn, confirmBtn].forEach(btn => {
-    btn.classList.add("disabled");
-    btn.style.pointerEvents = "none";
-  });
-  confirmBtn.style.display = "inline-block";
+  btn.classList.add("disabled");
+  btn.style.pointerEvents = "none";
+});
+confirmBtn.style.display = "inline-block"; // 讓載入中也看到確認完成按鈕
 
-  // === 新增：半透明白底遮罩在按鈕上 ===
-  const btnOverlay = document.createElement("div");
-  btnOverlay.id = "btnOverlay";
-  Object.assign(btnOverlay.style, {
-    position: "absolute",
-    inset: "0",
-    background: "rgba(255,255,255,0.7)",
-    pointerEvents: "auto",
-    borderRadius: "8px",
-    zIndex: "9",
-  });
-  // 包進 action-buttons 區域上方
-  const actionRect = actionBtns.getBoundingClientRect();
-  const modalRect = imgModal.getBoundingClientRect();
-  const offsetTop = actionRect.top - modalRect.top;
-  btnOverlay.style.top = `${offsetTop}px`;
-  btnOverlay.style.height = `${actionRect.height}px`;
-  btnOverlay.style.width = "100%";
-  btnOverlay.style.left = "0";
-  btnOverlay.style.position = "absolute";
-  btnOverlay.style.pointerEvents = "auto";
-  btnOverlay.style.zIndex = "11";
-  btnOverlay.style.background = "rgba(255,255,255,0.6)";
-  actionBtns.appendChild(btnOverlay);
-
-  // === 照片載入中遮罩 ===
   const overlay = document.createElement("div");
   overlay.id = "loadingSpinner";
   overlay.innerHTML = `
@@ -809,7 +785,6 @@ async function confirmUpload(files) {
 
   await new Promise(r => setTimeout(r, 100));
 
-  // === 壓縮圖片 ===
   previewMode = "confirm";
   previewFiles = await Promise.all(
     files.map(async f => {
@@ -819,15 +794,11 @@ async function confirmUpload(files) {
   );
   previewIndex = 0;
 
-  // 移除遮罩
   overlay.remove();
-  btnOverlay.remove();
-
   setupPreviewModal();
   updatePreviewImage();
   updateNavButtons();
 
-  // 啟用按鈕
   [deleteBtn, confirmBtn].forEach(btn => {
     btn.classList.remove("disabled");
     btn.style.pointerEvents = "";
