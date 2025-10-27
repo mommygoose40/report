@@ -593,38 +593,35 @@ function openGallery() {
 }
 
 fileGallery.addEventListener("change", () => {
-  // 若有殘留提示框（例如「您還可以新增幾張」），先移除
-  document.getElementById("customModal")?.remove();
-
   if (!fileGallery.files.length) return;
 
   const remaining = MAX_TOTAL - photos.length;
   const selected = fileGallery.files.length;
 
-  // 超過單次上限
   if (selected > MAX_PER_BATCH) {
-    document.getElementById("customModal")?.remove(); // 保險移除
-    showMessage(
-      `超過 <span style="color:red;font-weight:bold;">${MAX_PER_BATCH}</span> 張上限，請重新選擇`
-    );
-    setTimeout(() => {
-      fileGallery.value = "";
-    }, 300);
-    return;
-  }
+  showMessage(
+    `超過 <span style="color:red;font-weight:bold;">${MAX_PER_BATCH}</span> 張上限，請重新選擇`
+  );
+  fileGallery.value = "";
+  // 延遲清空避免閃爍
+  setTimeout(() => {
+    fileGallery.value = "";
+  }, 300);
+  return;
+}
 
-  // 超過可再新增數量
   if (selected > remaining) {
-    document.getElementById("customModal")?.remove(); // 再次保險移除
-    showMessage(
-      `只能再新增 <span style="color:red;font-weight:bold;">${remaining}</span> 張，請重新選擇`
-    );
-    skipNextAddTip = true;
-    setTimeout(() => {
-      fileGallery.value = "";
-    }, 300);
-    return;
-  }
+  showMessage(
+    `只能再新增 <span style="color:red;font-weight:bold;">${remaining}</span> 張，請重新選擇`
+  );
+  skipNextAddTip = true; // 下一次開相簿不跳提示
+
+  // 延遲清空避免閃爍
+  setTimeout(() => {
+    fileGallery.value = "";
+  }, 300);
+  return;
+}
 
   confirmUpload([...fileGallery.files]);
   fileGallery.value = "";
@@ -642,6 +639,41 @@ function openCamera() {
 fileCamera.addEventListener("change", () => {
   if (fileCamera.files[0]) confirmUpload([fileCamera.files[0]]);
   fileCamera.value = "";
+});
+
+fileGallery.addEventListener("change", () => {
+  if (!fileGallery.files.length) return;
+
+  const remaining = MAX_TOTAL - photos.length;
+  const selected = fileGallery.files.length;
+
+  if (selected > MAX_PER_BATCH) {
+  showMessage(
+    `超過 <span style="color:red;font-weight:bold;">${MAX_PER_BATCH}</span> 張上限，請重新選擇`
+  );
+  fileGallery.value = "";
+  // 延遲清空避免閃爍
+  setTimeout(() => {
+    fileGallery.value = "";
+  }, 300);
+  return;
+}
+
+  if (selected > remaining) {
+  showMessage(
+    `只能再新增 <span style="color:red;font-weight:bold;">${remaining}</span> 張，請重新選擇`
+  );
+  skipNextAddTip = true; // 下一次開相簿不跳提示
+
+  // 延遲清空避免閃爍
+  setTimeout(() => {
+    fileGallery.value = "";
+  }, 300);
+  return;
+}
+
+  confirmUpload([...fileGallery.files]);
+  fileGallery.value = "";
 });
 
 function renderThumbs() {
