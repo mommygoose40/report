@@ -1054,75 +1054,50 @@ function changePreview(dir) {
 }
 
 function showMessage(text, onConfirm) {
-  // 清除舊的提示窗
   document.getElementById("customModal")?.remove();
-
   const overlay = document.createElement("div");
   overlay.id = "customModal";
   Object.assign(overlay.style, {
     position: "fixed",
     inset: "0",
-    background: "rgba(0,0,0,0.4)",
+    background: "rgba(0,0,0,0.6)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     zIndex: "9999",
-    opacity: "0",
-    transition: "opacity 0.25s ease" // ← 柔和淡入
   });
-
   const box = document.createElement("div");
   Object.assign(box.style, {
-    background: "rgba(255,255,255,0.96)",
-    backdropFilter: "blur(4px)",
-    color: "#222",
-    borderRadius: "14px",
-    padding: "34px 46px",
+    background: "#fff",
+    color: "#000",
+    borderRadius: "12px",
+    padding: "30px 40px",
     fontSize: "22px",
     textAlign: "center",
-    lineHeight: "1.6",
     maxWidth: "80%",
-    boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
-    transform: "scale(0.9)",
-    transition: "transform 0.25s ease"
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
   });
   box.innerHTML = text;
 
   const btn = document.createElement("button");
   btn.textContent = "確定";
   Object.assign(btn.style, {
-    marginTop: "26px",
+    marginTop: "24px",
     fontSize: "20px",
     padding: "10px 28px",
     borderRadius: "8px",
     border: "none",
     background: "#0b5ed7",
     color: "#fff",
-    cursor: "pointer",
-    transition: "background 0.2s"
   });
-  btn.onmouseenter = () => (btn.style.background = "#0949a0");
-  btn.onmouseleave = () => (btn.style.background = "#0b5ed7");
-
   btn.onclick = () => {
-    overlay.style.opacity = "0";
-    box.style.transform = "scale(0.9)";
-    setTimeout(() => {
-      overlay.remove();
-      if (typeof onConfirm === "function") onConfirm();
-    }, 200);
+    overlay.remove();
+    if (typeof onConfirm === "function") onConfirm();
   };
-
   box.appendChild(document.createElement("br"));
   box.appendChild(btn);
   overlay.appendChild(box);
   document.body.appendChild(overlay);
-
-  // 啟動動畫
-  requestAnimationFrame(() => {
-    overlay.style.opacity = "1";
-    box.style.transform = "scale(1)";
-  });
 }
 
 window.addEventListener("beforeunload", () => {
