@@ -711,10 +711,9 @@ async function confirmUpload(files) {
   img.style.opacity = "0";
 
   [leftBtn, rightBtn, deleteBtn, confirmBtn].forEach(btn => {
-  btn.classList.add("disabled");
-  btn.style.pointerEvents = "none";
-});
-confirmBtn.style.display = "inline-block"; // 讓載入中也看到確認完成按鈕
+    btn.classList.add("disabled");
+    btn.style.pointerEvents = "none";
+  });
 
   const overlay = document.createElement("div");
   overlay.id = "loadingSpinner";
