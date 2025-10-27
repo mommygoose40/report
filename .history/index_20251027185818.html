@@ -551,7 +551,7 @@ function showAddLimitMessage(openAction) {
     return;
   }
 
-  // 剛跳過「只能再上傳...」→ 這次直接開相簿不再跳提示
+  // 若剛出現過「只能再上傳...」，這次直接開相簿不再跳提示
   if (skipNextAddTip) {
     skipNextAddTip = false;
     if (typeof openAction === "function") openAction();
@@ -562,15 +562,25 @@ function showAddLimitMessage(openAction) {
   showMessage(`您還可以新增 <b>${remain}</b> 張照片`, openAction);
 }
 
+function openCamera() {
+  const remain = MAX_TOTAL - photos.length;
+  if (remain <= 0) {
+    showMessage("無法新增，已達 20 張上限");
+    return;
+  }
+  fileCamera.click();
+}
+
+let skipNextAddTip = false; // 放在最上面全域區
+
 function openGallery() {
   const remain = MAX_TOTAL - photos.length;
-
   if (remain <= 0) {
     showMessage("無法新增，已達 20 張上限");
     return;
   }
 
-  // 同步檢查冷卻
+  // 若剛剛出現過「只能再上傳...」，這次直接開相簿不再跳提示
   if (skipNextAddTip) {
     skipNextAddTip = false;
     fileGallery.click();
@@ -582,53 +592,6 @@ function openGallery() {
     return;
   }
 
-  showMessage(`您還可以新增 <b>${remain}</b> 張照片`, () => fileGallery.click());
-}
-
-fileGallery.addEventListener("change", () => {
-  if (!fileGallery.files.length) return;
-
-  const remaining = MAX_TOTAL - photos.length;
-  const selected = fileGallery.files.length;
-
-  if (selected > MAX_PER_BATCH) {
-    showMessage("超過上限 20 張，請重新上傳");
-    fileGallery.value = "";
-    return;
-  }
-
-  if (selected > remaining) {
-    showMessage(
-      `只能再上傳 <span style="color:red;font-weight:bold;">${remaining}</span> 張，請重新選擇`
-    );
-    skipNextAddTip = true; // 下一次開相簿不跳「您還可以新增」提示
-    fileGallery.value = "";
-    return;
-  }
-
-  confirmUpload([...fileGallery.files]);
-  fileGallery.value = "";
-});
-
-function openCamera() {
-  const remain = MAX_TOTAL - photos.length;
-  if (remain <= 0) {
-    showMessage("無法新增，已達 20 張上限");
-    return;
-  }
-  fileCamera.click();
-}
-
-function openGallery() {
-  const remain = MAX_TOTAL - photos.length;
-  if (remain <= 0) {
-    showMessage("無法新增，已達 20 張上限");
-    return;
-  }
-  if (remain === MAX_TOTAL) {
-    fileGallery.click();
-    return;
-  }
   showMessage(`您還可以新增 <b>${remain}</b> 張照片`, () => fileGallery.click());
 }
 
@@ -644,23 +607,24 @@ fileGallery.addEventListener("change", () => {
   const selected = fileGallery.files.length;
 
   if (selected > MAX_PER_BATCH) {
-    showMessage("超過上限 20 張，請重新上傳");
+    showMessage("超過 20 張上限，請重新選擇");
     fileGallery.value = "";
     return;
   }
 
   if (selected > remaining) {
-  showMessage(
-    `只能再上傳 <span style="color:red;font-weight:bold;">${remaining}</span> 張，請重新選擇`
-  );
-  skipNextAddTip = true; // ← 下次按開相簿不再跳提示
-  fileGallery.value = "";
-  return;
-}
+    showMessage(
+      `只能再上傳 <span style="color:red;font-weight:bold;">${remaining}</span> 張，請重新選擇`
+    );
+    skipNextAddTip = true; // 下次按開相簿不再跳提示
+    fileGallery.value = "";
+    return;
+  }
 
   confirmUpload([...fileGallery.files]);
   fileGallery.value = "";
 });
+
 
 function renderThumbs() {
   thumbs.innerHTML = "";
