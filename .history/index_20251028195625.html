@@ -1346,6 +1346,12 @@ window.addEventListener('load', () => {
   sharedCtx = new (window.AudioContext || window.webkitAudioContext)();
 });
 
+// 共用 AudioContext（避免重建延遲）
+let sharedCtx = null;
+window.addEventListener('load', () => {
+  sharedCtx = new (window.AudioContext || window.webkitAudioContext)();
+});
+
 // === 錄音 ===
 async function startRecording(isRedo = false) {
   try {
