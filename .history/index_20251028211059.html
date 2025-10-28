@@ -1659,38 +1659,12 @@ function confirmAudio() {
 }
 
 /* === 重錄 === */
-async function redoAudio() {
-  const redoBtn = document.querySelector('.ui-btn.gray');
-  if (redoBtn) {
-    redoBtn.textContent = '載入中...';
-    redoBtn.disabled = true;
-    redoBtn.style.opacity = '0.5';
-  }
-
-  // 🔹 關閉舊畫面但暫時不進入錄音中
+function redoAudio() {
+  hideScreenLock();        // 🔹 關閉舊遮罩
+  unlockBodyScroll();      // 🔹 恢復滾動
   recordModal.style.display = 'none';
   audioBlob = null;
-
-  try {
-    // 🔹 先要求麥克風權限
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-    // 🔹 麥克風可用後再真正開始錄音
-    if (redoBtn) {
-      redoBtn.textContent = '重錄';
-      redoBtn.disabled = false;
-      redoBtn.style.opacity = '1';
-    }
-
-    startRecording(true);  // 傳入 isRedo = true，進入正式錄音流程
-  } catch (e) {
-    if (redoBtn) {
-      redoBtn.textContent = '重錄';
-      redoBtn.disabled = false;
-      redoBtn.style.opacity = '1';
-    }
-    showCustomAlert('無法啟動麥克風');
-  }
+  startRecording();
 }
 
 function showCustomAlert(title, message = '') {
