@@ -1459,46 +1459,27 @@ async function startRecording(isRedo = false) {
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
     recordModal.innerHTML = `
-  <div class="modal-content" style="
-    position:relative;
-    padding-top:36px;   /* 🔹 原本50 改36，整體往上 */
-    z-index:10000;
-    pointer-events:auto;">
-    
-    <!-- 🔹 錄音中叉叉 -->
-    <button id="closeRecordBtn" style="
-      position:absolute;
-      top:6px; right:10px;
-      background:none; border:none;
-      color:#555; font-size:36px; line-height:1;
-      cursor:pointer;
-      z-index:10001;">&times;</button>
+      <div class="modal-content" style="position:relative;padding-top:50px;z-index:10001;pointer-events:auto;">
+        <button id="closeRecordBtn" style="
+          position:absolute;top:6px;right:10px;
+          background:none;border:none;color:#555;font-size:36px;line-height:1;
+          cursor:pointer;z-index:10002;pointer-events:auto;">&times;</button>
 
-    <div style="text-align:center;margin-top:-18px;"> <!-- 🔹 整體上移 -->
-      <div class="record-status" style="margin-bottom:2px;"> <!-- 🔹 縮小間距 -->
-        <span class="record-dot"></span>
-        <span class="red-text" style="font-size:24px;font-weight:600;">錄音中</span>
-      </div>
+        <div style="text-align:center;margin-top:-6px;">
+          <div class="record-status" style="margin-bottom:6px;">
+            <span class="record-dot"></span>
+            <span class="red-text" style="font-size:24px;font-weight:600;">錄音中</span>
+          </div>
 
-      <div id="volumeBar" style="
-        width:92%;
-        height:24px;
-        background:#eee;
-        border-radius:12px;
-        margin:4px auto 18px;  /* 🔹 上推下縮 */
-        overflow:hidden;">
-        <div id="volumeFill" style="
-          width:0%;
-          height:100%;
-          background:#0b5ed7;
-          transition:width 0.05s linear;"></div>
-      </div>
+          <div id="volumeBar" style="
+            width:100%;height:22px;background:#eee;
+            border-radius:12px;margin:2px 0 16px 0;overflow:hidden;">
+            <div id="volumeFill" style="width:0%;height:100%;background:#0b5ed7;transition:width 0.05s linear;"></div>
+          </div>
 
-      <button class="ui-btn red" id="stopRecordBtn" style="
-        font-size:21px;
-        margin-top:2px;">停止錄音</button>
-    </div>
-  </div>`;
+          <button class="ui-btn red" id="stopRecordBtn" style="font-size:21px;margin-top:-2px;pointer-events:auto;">停止錄音</button>
+        </div>
+      </div>`;
     recordModal.style.display = 'flex';
     recordModal.style.zIndex = '10001';
 
