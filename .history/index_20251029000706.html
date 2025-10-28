@@ -1376,9 +1376,6 @@ let micLoadingTimer = null;
 
 function showMicLoading(delay = 1000) {
   micLoadingTimer = setTimeout(() => {
-    // 🔹 鎖定灰層
-    showScreenLock();
-
     let box = document.getElementById('micLoading');
     if (!box) {
       box = document.createElement('div');
@@ -1423,7 +1420,6 @@ function hideMicLoading() {
   clearTimeout(micLoadingTimer);
   const box = document.getElementById('micLoading');
   if (box) box.style.display = 'none';
-  hideScreenLock(); // 🔹 準備結束後解除灰層
 }
 
 /* === 全域變數 === */
