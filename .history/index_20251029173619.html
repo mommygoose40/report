@@ -507,18 +507,17 @@ input[type="text"]:focus {
 <div class="form-section">
   <div class="step-title">② 照片說明</div>
 
-<label id="recordBtn" class="ui-btn" onclick="startRecording()">開始錄音</label>
+  <!-- 🔹 提醒文字 -->
+  <div style="margin:8px 0 18px 0;color:#d32f2f;font-weight:700;font-size:21px;">
+    ※ 請允許使用麥克風
+  </div>
 
-<!-- 🔹 提醒文字（移到按鈕下方，縮小字體與間距） -->
-<div style="margin:6px 0 14px 0;color:#d32f2f;font-weight:600;font-size:18px;">
-  ※ 請允許使用麥克風
-</div>
+  <label id="recordBtn" class="ui-btn" onclick="startRecording()">開始錄音</label>
+  <audio id="audioPlayback" controls style="display:none;width:100%;max-width:400px;"></audio>
 
-<audio id="audioPlayback" controls style="display:none;width:100%;max-width:400px;"></audio>
-
-<div style="margin-top:20px;">
-  <input type="text" id="summary" placeholder="輸入照片說明文字" maxlength="50"/>
-</div>
+  <div style="margin-top:20px;">
+    <input type="text" id="summary" placeholder="輸入照片說明文字" maxlength="50"/>
+  </div>
 </div>
 
 <!-- 🔽 錄音彈窗容器 -->
