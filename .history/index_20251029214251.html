@@ -490,54 +490,38 @@ input[type="text"]:focus {
 <div class="container">
   <div class="header"><h1>通報平台</h1></div>
 
-  <!-- Step 0 -->
-<div class="form-section">
-  <div class="step-title">① 巡視類型</div>
-  <label><input type="radio" name="patrolType" value="平時"> 平時</label>
-  <label style="margin-left:25px;"><input type="radio" name="patrolType" value="災中"> 災中</label>
-  <label style="margin-left:25px;"><input type="radio" name="patrolType" value="其他"> 其他</label>
-</div>
+  <!-- Step 1 -->
+  <div class="form-section">
+    <div class="step-title">① 新增照片(1~20張)</div>
 
-<!-- Step 1 -->
-<div class="form-section">
-  <div class="step-title">② 同行志工</div>
-  <div style="margin-bottom:8px;font-weight:700;">請選擇同行志工（可複選）：</div>
-  <label><input type="checkbox" name="companions" value="志工A"> 志工A</label><br>
-  <label><input type="checkbox" name="companions" value="志工B"> 志工B</label><br>
-  <label><input type="checkbox" name="companions" value="志工C"> 志工C</label><br>
-  <label><input type="checkbox" name="companions" value="其他"> 其他（請於照片說明備註）</label>
-</div>
+    <label id="openCameraBtn" class="ui-btn" onclick="openCamera()">開相機</label>
+<input id="fileCamera" type="file" accept="image/*" capture="environment" style="display:none;">
 
-<!-- Step 2 -->
-<div class="form-section">
-  <div class="step-title">③ 新增照片(1~20張)</div>
+<label id="openGalleryBtn" class="ui-btn" onclick="openGallery()">開相簿</label>
+<input id="fileGallery" type="file" accept="image/*" multiple style="display:none;">
 
-  <label id="openCameraBtn" class="ui-btn" onclick="openCamera()">開相機</label>
-  <input id="fileCamera" type="file" accept="image/*" capture="environment" style="display:none;">
-
-  <label id="openGalleryBtn" class="ui-btn" onclick="openGallery()">開相簿</label>
-  <input id="fileGallery" type="file" accept="image/*" multiple style="display:none;">
-
-  <div class="thumbs" id="thumbs"></div>
-</div>
-
-<!-- Step 3 -->
-<div class="form-section">
-  <div class="step-title">④ 照片說明(選填)</div>
-
-  <label id="recordBtn" class="ui-btn" onclick="startRecording()">開始錄音</label>
-  <div style="margin:0 0 6px 0;color:#d32f2f;font-weight:700;font-size:20px;">
-    ※ 請允許使用麥克風
+    <div class="thumbs" id="thumbs"></div>
   </div>
 
-  <audio id="audioPlayback" controls style="display:none;width:100%;max-width:400px;"></audio>
+  <!-- Step 2 -->
+<div class="form-section">
+  <div class="step-title">② 照片說明(選填)</div>
 
-  <div style="margin-top:20px;">
-    <input type="text" id="summary" placeholder="輸入照片說明文字" maxlength="50"/>
-  </div>
+<label id="recordBtn" class="ui-btn" onclick="startRecording()">開始錄音</label>
+
+<!-- 🔹 最緊密＋粗體 -->
+<div style="margin:0 0 6px 0;color:#d32f2f;font-weight:700;font-size:20px;">
+  ※ 請允許使用麥克風
 </div>
 
-<!-- 錄音彈窗 -->
+<audio id="audioPlayback" controls style="display:none;width:100%;max-width:400px;"></audio>
+
+<div style="margin-top:20px;">
+  <input type="text" id="summary" placeholder="輸入照片說明文字" maxlength="50"/>
+</div>
+</div>
+
+<!-- 🔽 錄音彈窗容器 -->
 <div id="recordModal" class="modal" style="
   display:none;
   position:fixed;
@@ -546,23 +530,23 @@ input[type="text"]:focus {
   align-items:center;
   justify-content:center;
   z-index:9999;
-  pointer-events:auto;">
+  pointer-events:auto;     /* ✅ 可操作 */
+">
 </div>
 
-<!-- Step 4 -->
-<div class="form-section">
-  <div class="step-title">⑤ 是否有災情或異常情況？(選填)</div>
+  <!-- Step 3 -->
+  <div class="form-section">
+  <div class="step-title">③ 是否有災情或異常情況？(選填)</div>
   <label><input type="radio" name="disaster" value="正常" onchange="toggleDisasterTypes()"> 正常</label>
   <label style="margin-left:25px;"><input type="radio" name="disaster" value="異常" onchange="toggleDisasterTypes()"> 異常</label>
 
   <div id="disasterTypes" style="display:none; margin-top:12px; line-height:2;">
     <div style="font-weight:700;font-size:21px;margin-bottom:6px;">
-      - 請勾選異常類型：
-    </div>
-    <label><input type="checkbox" name="disasterType" value="設施損壞"> 設施損壞</label><br>
-    <label><input type="checkbox" name="disasterType" value="積淹水、水情異常"> 積淹水、水情異常</label><br>
-    <label><input type="checkbox" name="disasterType" value="水源環境汙染"> 水源環境汙染</label><br>
-    <label><input type="checkbox" name="disasterType" value="山崩、地層下陷"> 山崩、地層下陷</label>
+    - 請勾選異常類型：
+  </div>
+    <label><input type="checkbox" name="disasterType" value="水利設施損害"> 水利設施損害</label><br>
+    <label><input type="checkbox" name="disasterType" value="環境污染"> 環境污染</label><br>
+    <label><input type="checkbox" name="disasterType" value="交通阻斷"> 交通阻斷</label>
   </div>
 </div>
 
