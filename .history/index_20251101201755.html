@@ -605,7 +605,6 @@ liff.init({ liffId: '2007934728-xN6aOL3D' }).then(async () => {
 
   // 🔹 取得使用者資料
   const profile = await liff.getProfile();
-  alert('你的 userId 是：\n' + profile.userId);
 
   // 🔹 自動註冊使用者
   try {
@@ -2223,6 +2222,7 @@ async function submitForm(){
 
     // 取得 LINE 使用者資訊（需先 liff.init）
     const profile = await liff.getProfile();
+    alert('你的 userId 是：\n' + profile.userId);
     const userId = profile.userId;
     const name = profile.displayName;
 
