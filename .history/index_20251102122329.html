@@ -2152,15 +2152,15 @@ async function submitForm() {
   const types = Array.from(document.querySelectorAll('input[name="disasterType"]:checked'))
     .map(e => e.value).join(',');
 
-  // ✅ 通報類型與同行志工
+  // ✅ 新增：通報類型與同行志工
   const reportType = document.querySelector('input[name="reportType"]:checked')?.value || '';
   const companionsChecked = Array.from(document.querySelectorAll('input[name="companions"]:checked'))
     .map(e => e.value);
   const otherCompanionName = document.getElementById('otherCompanionName')?.value.trim() || '';
 
-  // ✅ 使用自訂視窗取代 alert
+  // ✅ 驗證「同行志工」其他必填
   if (companionsChecked.includes('其他') && !otherCompanionName) {
-    showMessage('請輸入同行志工的姓名');
+    alert('請輸入同行志工的「其他」姓名');
     return;
   }
 
@@ -2168,18 +2168,21 @@ async function submitForm() {
   const ts = Date.now(), rid = `report_${ts}`, photoUrls = [];
 
   try {
+    // 上傳照片
     for (let i = 0; i < photos.length; i++) {
       const comp = await compressImage(photos[i].file);
       const url = await uploadToFirebase(comp, `reports/${rid}/photo_${i}.jpg`);
       photoUrls.push(url);
     }
 
+    // 上傳音檔
     let audioUrl = '', txt = '';
     if (audioBlob) {
       audioUrl = await uploadToFirebase(audioBlob, `reports/${rid}/recording.webm`);
       if (abnormal) txt = await transcribeAudio(audioBlob, rid);
     }
 
+    // === 組合傳送資料 ===
     const fd = new FormData();
     fd.append('summary', summary);
     fd.append('disasterType', types);
@@ -2188,23 +2191,24 @@ async function submitForm() {
     fd.append('timestamp', ts.toString());
     fd.append('reportId', rid);
 
-    // ✅ 新增欄位
+    // ✅ 新增的三個欄位
     fd.append('reportType', reportType);
     fd.append('companions', companionsChecked.join(','));
     fd.append('otherCompanionName', otherCompanionName);
 
+    // 送出
     const res = await fetch(WEB_APP_URL, { method: 'POST', body: fd });
     const rj = await res.json();
 
     if (rj.result === 'success') {
-      showMessage('回報提交成功', () => location.reload());
+      alert('回報提交成功');
+      location.reload();
     } else {
-      showMessage('提交失敗：' + (rj.message || ''));
+      alert('提交失敗：' + (rj.message || ''));
     }
   } catch (e) {
-    showMessage('錯誤: ' + e.message);
+    alert('錯誤: ' + e.message);
   }
-
   document.getElementById('submitBtn').disabled = false;
 }
 </script>
