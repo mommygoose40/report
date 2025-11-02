@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>防汛通報系統</title>
+<title>災情回報系統</title>
 <script src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
 <!-- Firebase SDK -->
   <script type="module">
@@ -628,13 +628,10 @@ input[type="text"]:focus {
 </div>
 
   <!-- Submit -->
-<div class="form-section" style="text-align:center;">
-  <div style="display: flex; justify-content: center; gap: 14px;">
-    <label id="closeBtn" class="ui-btn gray" onclick="liff.closeWindow()">關閉頁面</label>
+  <div class="form-section" style="text-align:center;">
     <label id="submitBtn" class="ui-btn" onclick="submitForm()">提交回報</label>
+    <div id="serverStatus">伺服器狀態：檢查中...</div>
   </div>
-  <div id="serverStatus" style="margin-top:10px;">伺服器狀態：檢查中...</div>
-</div>
 </div>
 
 <script>
