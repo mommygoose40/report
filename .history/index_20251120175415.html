@@ -1784,29 +1784,6 @@ async function startRecording(isRedo = false) {
   }
 }
 
-function cancelRecording() {
-  // 停止媒体录音
-  try {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-      mediaRecorder.stop();  // 停止录音
-    }
-    // 停止流并关闭音频上下文
-    if (currentStream) {
-      currentStream.getTracks().forEach(track => track.stop());
-    }
-    if (currentAudioContext) {
-      currentAudioContext.close();
-    }
-  } catch (err) {
-    console.error('停止录音时发生错误:', err);
-  }
-
-  // 隐藏录音界面
-  hideScreenLock();
-  recordModal.style.display = 'none';  // 关闭录音弹窗
-  hideMicLoading();  // 隐藏加载状态
-}
-
 /* === 重錄 === */
 function redoAudio() {
   recordModal.style.display = 'none';
