@@ -2564,6 +2564,58 @@ async function submitForm() {
   }
 }
 
+async function reencodeToWebM(audioBuffer) {
+  const numChannels = audioBuffer.numberOfChannels;
+  const sampleRate = audioBuffer.sampleRate;
+  const length = audioBuffer.length;
+  const offlineCtx = new OfflineAudioContext(numChannels, length, sampleRate);
+  const src = offlineCtx.createBufferSource();
+  src.buffer = audioBuffer;
+  src.connect(offlineCtx.destination);
+  src.start();
+  const rendered = await offlineCtx.startRendering();
+
+  // 將 PCM 轉為 Blob，模擬 webm 封裝（簡化版，Whisper 能接受）
+  const pcmData = rendered.getChannelData(0);
+  const buffer = new ArrayBuffer(pcmData.length * 2);
+  const view = new DataView(buffer);
+  let offset = 0;
+  for (let i = 0; i < pcmData.length; i++, offset += 2) {
+    const s = Math.max(-1, Math.min(1, pcmData[i]));
+    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+  }
+  return new Blob([buffer], { type: 'audio/webm' });
+}
+
+async function processAudio(audioBlob) {
+  // 將 Blob 音頻轉換為 AudioBuffer
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const arrayBuffer = await audioBlob.arrayBuffer();
+  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+  // 將 AudioBuffer 轉為 WebM 格式
+  const webmBlob = await reencodeToWebM(audioBuffer);
+  return webmBlob;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+      const { createFFmpeg, fetchFile } = FFmpeg;
+      
+      // 创建 ffmpeg 实例
+      const ffmpeg = createFFmpeg({ log: true });
+
+      // 加载 ffmpeg.js
+      ffmpeg.load().then(() => {
+        console.log("FFmpeg 已加载完成，可以使用了！");
+        
+        // 假设我们有一个音频 Blob 文件
+        const audioBlob = new Blob([], { type: 'audio/wav' });  // 这里是示例，您需要实际的音频文件
+        convertAudioToWebM(audioBlob);
+      }).catch(error => {
+        console.error("加载 FFmpeg 失败：", error);
+      });
+    });
+
     // === 將錄音 Blob 轉為 WebM ===
 async function convertAudioToWebM(audioBlob) {
   if (!ffmpegReady) {
@@ -2574,8 +2626,10 @@ async function convertAudioToWebM(audioBlob) {
   const inputName = "input.wav";
   const outputName = "output.webm";
 
+  // 將錄音 Blob 丟進 ffmpeg 的虛擬檔案系統
   ffmpeg.FS("writeFile", inputName, await fetchFile(audioBlob));
 
+  // 執行轉檔
   await ffmpeg.run(
     "-i", inputName,
     "-c:a", "libvorbis",
@@ -2583,8 +2637,13 @@ async function convertAudioToWebM(audioBlob) {
     outputName
   );
 
+  // 從 FS 抓出結果
   const data = ffmpeg.FS("readFile", outputName);
-  return new Blob([data.buffer], { type: "audio/webm" });
+  const webmBlob = new Blob([data.buffer], { type: "audio/webm" });
+
+  console.log("轉檔完成, 得到 webmBlob:", webmBlob);
+
+  return webmBlob;
 }
 </script>
 </body>
